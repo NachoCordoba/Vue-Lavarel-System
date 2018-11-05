@@ -32786,7 +32786,7 @@ exports = module.exports = __webpack_require__(40)(false);
 
 
 // module
-exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content{\n    width: 100% !important;\n    position: absolute !important;\n}\n.mostrar{\n    display: list-item !important;\n    opacity: 1 !important;\n    position: absolute !important;\n    background-color: #3c29297a !important;\n}\n.div-error{\n    display:flex;\n    justify-content: center;\n}\n.text-error{\n    color: red !important;\n    font-weight: bold;\n}\n", ""]);
 
 // exports
 
@@ -33400,6 +33400,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -33409,7 +33416,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             arrayCategoria: [],
             modal: 0,
             tituloModal: '',
-            tipoAccion: ''
+            tipoAccion: '',
+            errorCategoria: 0,
+            errorMostrarMsjCategoria: []
         };
     },
 
@@ -33424,7 +33433,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             });
         },
         registrarCategoria: function registrarCategoria() {
+            if (this.validarCategoria()) {
+                return;
+            }
+
             var me = this;
+
             axios.post('/categoria/registrar', {
                 'nombre': this.nombre,
                 'descripcion': this.descripcion
@@ -33466,6 +33480,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             this.tituloModal = '';
             this.nombre = '';
             this.descripcion = '';
+        },
+        validarCategoria: function validarCategoria() {
+            this.errorCategoria = 0;
+            this.errorMostrarMsjCategoria = [];
+            if (!this.nombre) this.errorMostrarMsjCategoria.push("El nombre de la categoria debe estar completo.");
+            if (this.errorMostrarMsjCategoria.length) this.errorCategoria = 1;
+
+            return this.errorCategoria;
         }
     },
     mounted: function mounted() {
@@ -33664,11 +33686,7 @@ var render = function() {
                               _vm.nombre = $event.target.value
                             }
                           }
-                        }),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "help-block" }, [
-                          _vm._v("(*) Ingrese el nombre de la categoría")
-                        ])
+                        })
                       ])
                     ]),
                     _vm._v(" "),
@@ -33705,7 +33723,34 @@ var render = function() {
                           }
                         })
                       ])
-                    ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: _vm.errorCategoria,
+                            expression: "errorCategoria"
+                          }
+                        ],
+                        staticClass: "form-group row div-error"
+                      },
+                      [
+                        _c(
+                          "div",
+                          { staticClass: "text-center text-error" },
+                          _vm._l(_vm.errorMostrarMsjCategoria, function(error) {
+                            return _c("div", {
+                              key: error,
+                              domProps: { textContent: _vm._s(error) }
+                            })
+                          })
+                        )
+                      ]
+                    )
                   ]
                 )
               ]),
