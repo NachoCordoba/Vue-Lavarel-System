@@ -33407,10 +33407,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
         return {
+            categoria_id: 0,
             nombre: '',
             descripcion: '',
             arrayCategoria: [],
@@ -33470,7 +33472,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                                     break;
                                 }
                             case 'actualizar':
-                                {}
+                                {
+                                    this.categoria_id = data['id'];
+                                    this.modal = 1;
+                                    this.tituloModal = 'Actualizar Categoria';
+                                    this.tipoAccion = 2;
+                                    this.nombre = data['nombre'];
+                                    this.descripcion = data['descripcion'];
+                                }
                         }
                     }
             }
@@ -33488,6 +33497,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             if (this.errorMostrarMsjCategoria.length) this.errorCategoria = 1;
 
             return this.errorCategoria;
+        },
+        actualizarCategoria: function actualizarCategoria() {
+            if (this.validarCategoria()) {
+                return;
+            }
+            var me = this;
+
+            axios.put('/categoria/actualizar', {
+                'id': this.categoria_id,
+                'nombre': this.nombre,
+                'descripcion': this.descripcion
+            }).then(function (response) {
+                me.cerrarModal();
+                me.listarCategoria();
+            }).catch(function (error) {
+                console.log(error);
+            });
         }
     },
     mounted: function mounted() {
@@ -33770,9 +33796,7 @@ var render = function() {
                   [_vm._v("Cerrar")]
                 ),
                 _vm._v(" "),
-                (_vm.tipoAccion
-                ? "Guardar"
-                : "Actualizar")
+                _vm.tipoAccion == 1
                   ? _c(
                       "button",
                       {
@@ -33785,6 +33809,22 @@ var render = function() {
                         }
                       },
                       [_vm._v("Guardar")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.tipoAccion == 2
+                  ? _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: { type: "button" },
+                        on: {
+                          click: function($event) {
+                            _vm.actualizarCategoria()
+                          }
+                        }
+                      },
+                      [_vm._v("Actualizar")]
                     )
                   : _vm._e()
               ])

@@ -114,7 +114,7 @@
                                 <div v-show="errorCategoria" class="form-group row div-error">
                                     <div class="text-center text-error">
                                         <div v-for="error in errorMostrarMsjCategoria" :key="error" v-text="error">
-                                            
+
                                         </div>
                                     </div>
                                 </div>
@@ -122,7 +122,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                            <button type="button" class="btn btn-primary" v-if="tipoAccion?'Guardar':'Actualizar'" @click="registrarCategoria()">Guardar</button>
+                            <button type="button" class="btn btn-primary" v-if="tipoAccion==1" @click="registrarCategoria()">Guardar</button>
+                            <button type="button" class="btn btn-primary" v-if="tipoAccion==2" @click="actualizarCategoria()">Actualizar</button>
                         </div>
                     </div>
                     <!-- /.modal-content -->
@@ -160,6 +161,7 @@
     export default {
         data(){
             return {
+                categoria_id : 0 ,
                 nombre :'',
                 descripcion:'',
                 arrayCategoria:[],
@@ -214,6 +216,12 @@
                                 break;
                             }
                             case 'actualizar':{
+                                this.categoria_id = data['id']
+                                this.modal = 1;
+                                this.tituloModal = 'Actualizar Categoria';
+                                this.tipoAccion = 2;
+                                this.nombre = data['nombre'];
+                                this.descripcion = data['descripcion']
                             }
                         }
                     }
@@ -233,6 +241,23 @@
 
                 return this.errorCategoria;
 
+            },
+            actualizarCategoria(){
+                if(this.validarCategoria()){
+                    return;
+                }
+                let me = this;
+
+                axios.put('/categoria/actualizar',{
+                    'id' : this.categoria_id,
+                    'nombre': this.nombre,
+                    'descripcion': this.descripcion
+                }).then(function (response){
+                    me.cerrarModal();
+                    me.listarCategoria();
+                }).catch(function (error){
+                    console.log(error);
+                });
             }
         },
         mounted() {
