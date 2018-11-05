@@ -16,8 +16,8 @@ class CategoriaController extends Controller
      */
     public function index(Request $request){
         //
-        //if(!$request->ajax()) return redirect('/');
-        $categorias = Categoria::paginate(2);
+        if(!$request->ajax()) return redirect('/');
+        $categorias = Categoria::paginate(5);
 
         return [
             'pagination'=>[
