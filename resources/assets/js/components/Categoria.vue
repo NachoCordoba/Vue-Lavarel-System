@@ -43,9 +43,16 @@
                                         <button type="button" class="btn btn-warning btn-sm" @click="abrirModal('categoria','actualizar',categoria)">
                                           <i class="icon-pencil"></i>
                                         </button> &nbsp;
-                                        <button type="button" class="btn btn-danger btn-sm">
-                                          <i class="icon-trash"></i>
-                                        </button>
+                                        <template v-if="categoria.condicion">
+                                            <button type="button" class="btn btn-danger btn-sm" @click="desactivarCategoria(categoria)">
+                                                <i class="icon-trash"></i>
+                                            </button>
+                                        </template>
+                                        <template v-else>
+                                            <button type="button" class="btn btn-info btn-sm" @click="activarCategoria(categoria)">
+                                                <i class="icon-check"></i>
+                                            </button>
+                                        </template>
                                     </td>
                                     <td v-text="categoria.nombre"></td>
                                     <td v-text="categoria.descripcion"></td>
@@ -136,7 +143,7 @@
                 <div class="modal-dialog modal-danger" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4 class="modal-title">Eliminar Categoría</h4>
+                            <h4 class="modal-title" v-text="tituloModal"></h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">×</span>
                             </button>
@@ -258,6 +265,102 @@
                 }).catch(function (error){
                     console.log(error);
                 });
+            },
+            desactivarCategoria(data = []){
+                this.nombre=data['nombre'];
+                this.categoria_id=data['id'];
+                let me = this;
+                const swalWithBootstrapButtons = swal.mixin({
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                })
+
+                swalWithBootstrapButtons({
+                title: 'Estas seguro que deseas Desactivar?',
+                text: "Categoria: "+this.nombre,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, desactivarlo!',
+                cancelButtonText: 'No, cancelar!',
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    axios.put('/categoria/desactivar',{
+                        'id' : this.categoria_id
+                    }).then(function (response){
+                        swalWithBootstrapButtons(
+                            'Desactivado!',
+                            'Tu registro fue Desactivado.',
+                            'success'
+                        );
+                        me.listarCategoria();
+                    }).catch(function (error){
+                        swalWithBootstrapButtons(
+                            'Error',
+                            error.message,
+                            'error'
+                        )
+                    });
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons(
+                        'Cancelado',
+                        'No se hicieron cambios',
+                        'error'
+                    )
+                }
+                })
+            },
+            activarCategoria(data = []){
+                this.nombre=data['nombre'];
+                this.categoria_id=data['id'];
+                let me = this;
+                const swalWithBootstrapButtons = swal.mixin({
+                confirmButtonClass: 'btn btn-success',
+                cancelButtonClass: 'btn btn-danger',
+                buttonsStyling: false,
+                })
+
+                swalWithBootstrapButtons({
+                title: 'Estas seguro que deseas Activar?',
+                text: "Categoria: "+this.nombre,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, Activarla!',
+                cancelButtonText: 'No, cancelar!',
+                reverseButtons: true
+                }).then((result) => {
+                if (result.value) {
+                    axios.put('/categoria/activar',{
+                        'id' : this.categoria_id
+                    }).then(function (response){
+                        swalWithBootstrapButtons(
+                            'Desactivado!',
+                            'Tu registro fue Activado.',
+                            'success'
+                        );
+                        me.listarCategoria();
+                    }).catch(function (error){
+                        swalWithBootstrapButtons(
+                            'Error',
+                            error.message,
+                            'error'
+                        )
+                    });
+                } else if (
+                    // Read more about handling dismissals
+                    result.dismiss === swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons(
+                        'Cancelado',
+                        'No se hicieron cambios',
+                        'error'
+                    )
+                }
+                })
             }
         },
         mounted() {

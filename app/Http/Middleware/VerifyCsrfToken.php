@@ -14,6 +14,8 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         //
         'categoria/*',
-        '/categoria/actualizar'
+        '/categoria/actualizar',
+        '/categoria/desactivar',
+        '/categoria/activar'
     ];
 }
