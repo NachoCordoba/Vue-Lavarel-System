@@ -11,5 +11,8 @@ class Categoria extends Model
     //protected $primarykey = 'id' Eloquent asume que el primaryKey es id
     protected $fillable=['nombre','descripcion','condicion'];
 
+    public function articulos(){
+        return $this->hasMany('App\Articulo'); //uno a muchos
+    }
 
 }
